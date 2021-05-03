@@ -27,16 +27,14 @@ async function handleRequest(request) {
       return new Response(state, { status: 200 })
     case 'POST':
       req = JSON.stringify(await request.json())
-      console.log(req)
       await TERRAFORM.put('state', req)
       return new Response(null, { status: 200 })
     case 'LOCK':
       let lock = await TERRAFORM.get('lock')
       if (lock !== null) {
-        return new Response(null, { status: 423 })
+        return new Response(lock, { status: 423 })
       }
       let req = JSON.stringify(await request.json())
-      console.log(req)
       await TERRAFORM.put('lock', req)
       return new Response(null, { status: 200 })
     case 'UNLOCK':
