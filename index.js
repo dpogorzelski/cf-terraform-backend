@@ -23,22 +23,22 @@ async function handleRequest(request) {
 
   switch (request.method) {
     case 'GET':
-      let state = await TERRAFORM.get('state')
+      const state = await TERRAFORM.get('state')
       return new Response(state, { status: 200 })
     case 'POST':
-      req = JSON.stringify(await request.json())
+      const req = JSON.stringify(await request.json())
       await TERRAFORM.put('state', req)
       return new Response(null, { status: 200 })
     case 'LOCK':
-      let lock = await TERRAFORM.get('lock')
-      if (lock !== null) {
-        return new Response(lock, { status: 423 })
+      const lock = await TERRAFORM.get('lock')
+      if (lock === null) {
+        const req = JSON.stringify(await request.json())
+        await TERRAFORM.put('lock', req)
+        return new Response(null, { status: 200 })
       }
-      let req = JSON.stringify(await request.json())
-      await TERRAFORM.put('lock', req)
-      return new Response(null, { status: 200 })
+      return new Response(lock, { status: 423 })
     case 'UNLOCK':
-      await TERRAFORM.put('lock', null)
+      await TERRAFORM.delete('lock')
       return new Response(null, { status: 200 })
     default:
       return new Response(null, { status: 400 })
