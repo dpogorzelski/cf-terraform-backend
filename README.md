@@ -1,3 +1,6 @@
+# Intro
+A word of caution: KV store is eventually consistent so multiple/frequent writes could result in unpredictable outcome but it should be possible to swap KV out with other type of backends for a stronger consistency model.
+
 # Worker Setup
 
 ```bash
